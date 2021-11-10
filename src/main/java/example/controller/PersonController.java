@@ -1,5 +1,6 @@
 package example.controller;
 
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
@@ -10,8 +11,9 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@Controller("persons")
+@Controller("/persons")
 public class PersonController {
 
     List<Person> persons = new ArrayList<>();
@@ -29,5 +31,13 @@ public class PersonController {
         return persons.stream()
                 .filter(p -> p.getId().equals(id))
                 .findFirst();
+    }
+
+    @Get("{?max,offset}")
+    public List<Person> findAll(@Nullable Integer max, @Nullable Integer offset) {
+        return persons.stream()
+                .skip(offset == null ? 0 : offset)
+                .limit(max == null ? 10000 : max)
+                .collect(Collectors.toList());
     }
 }

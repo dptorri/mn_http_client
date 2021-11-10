@@ -20,7 +20,7 @@ Person {
 ````
 POST /persons
 GET /persons/{id}
-GET /persons
+GET /?max,offset
 ````
 #### 2.3 Add validation for the Person model
 
