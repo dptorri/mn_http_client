@@ -1,0 +1,6 @@
+micronaut:
+  application:
+    name: httpclient
+
+  server:
+    port: 8100
