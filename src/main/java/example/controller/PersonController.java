@@ -6,6 +6,7 @@ import io.micronaut.http.annotation.Get;
 import example.model.Person;
 import io.micronaut.http.annotation.Post;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,5 +22,12 @@ public class PersonController {
         persons.add(person);
 
         return person;
+    }
+
+    @Get("/{id}")
+    public Optional<Person> findById(@NotNull Integer id) {
+        return persons.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst();
     }
 }
