@@ -4,6 +4,7 @@ import example.model.Person;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
+import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
@@ -37,4 +38,18 @@ public class PersonControllerTests {
         Assertions.assertEquals("Smith", person.getLastName());
     }
 
+    @Test
+    public void testSaveNotValid() throws MalformedURLException {
+        final Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Smith");
+        person.setAge(-1);
+
+        Assertions.assertThrows(HttpClientResponseException.class,
+            () -> client
+                    .toBlocking()
+                    .retrieve(HttpRequest.POST("/persons", person), Person.class),
+            "person.age: must be greater than or equal to 0");
+
+    }
 }

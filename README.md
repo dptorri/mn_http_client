@@ -83,3 +83,8 @@ DATA
     @Client("/")
     HttpClient client;                
 ```
+#### 3.3 Add test for save Not Valid endpoint
+```
+
+
+```
