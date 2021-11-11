@@ -72,3 +72,14 @@ DATA
         Assertions.assertEquals("Smith", person.getLastName());
     }
 ```
+#### 3.2 Simplify HttpClient by using @Client annotation
+```
+    HttpClient client = HttpClient
+        .create(new URL("http://" + server.getHost() + ":" + server.getPort()));
+        
+// BETTER:
+
+    @Inject
+    @Client("/")
+    HttpClient client;                
+```
