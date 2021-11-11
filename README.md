@@ -36,6 +36,23 @@ Person {
  age: Not null or negative
 }
 ```
+#### 2.4 Add some users with curl in a bash script
+```
+#!/bin/bash
 
+curl -X POST "http://localhost:8100/persons" \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+--data-binary @- <<DATA
+{
+  "id": 2,
+  "firstName": "Dejah",
+  "lastName": "Thoris",
+  "age": 44
+}
+DATA
+
+
+```
 ### 3. Test using micronaut-http-client
 #### Test using simple mock data in JUnit 5

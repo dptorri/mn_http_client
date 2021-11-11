@@ -7,6 +7,7 @@ import io.micronaut.http.annotation.Get;
 import example.model.Person;
 import io.micronaut.http.annotation.Post;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class PersonController {
     List<Person> persons = new ArrayList<>();
 
     @Post
-    public Person save(@Body Person person) {
+    public Person save(@Body @Valid Person person) {
         person.setId(persons.size() + 1);
         persons.add(person);
 
