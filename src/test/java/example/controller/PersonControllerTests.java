@@ -19,9 +19,6 @@ import java.net.URL;
 public class PersonControllerTests {
 
     @Inject
-    EmbeddedServer server;
-
-    @Inject
     @Client("/")
     HttpClient client;
 
@@ -33,7 +30,6 @@ public class PersonControllerTests {
         person.setAge(33);
         person = client.toBlocking().retrieve(HttpRequest.POST("/persons", person), Person.class);
         Assertions.assertNotNull(person);
-        Assertions.assertEquals(1, person.getId());
         Assertions.assertEquals("John", person.getFirstName());
         Assertions.assertEquals("Smith", person.getLastName());
     }
@@ -56,5 +52,18 @@ public class PersonControllerTests {
     public void testFindById() throws MalformedURLException {
         Person person = client.toBlocking().retrieve(HttpRequest.GET("/persons/1"), Person.class);
         Assertions.assertNotNull(person);
+    }
+
+    @Test
+    public void testFindAll() throws MalformedURLException {
+        Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Smith");
+        person.setAge(33);
+        person = client.toBlocking().retrieve(HttpRequest.POST("/persons", person), Person.class);
+        Assertions.assertNotNull(person);
+
+        Person[] persons = client.toBlocking().retrieve(HttpRequest.GET("/persons"), Person[].class);
+        Assertions.assertEquals(1, persons.length);
     }
 }

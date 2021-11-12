@@ -108,3 +108,12 @@ public void testFindById() throws MalformedURLException {
     Assertions.assertNotNull(person);
 }
 ```
+#### 3.5 Add test for testFindAll
+```
+
+@Test
+public void testFindById() throws MalformedURLException {
+    Person person = client.toBlocking().retrieve(HttpRequest.GET("/persons/1"), Person.class);
+    Assertions.assertNotNull(person);
+}
+```
