@@ -25,8 +25,8 @@ GET /?max,offset
 #### 2.3 Add validation for the Person model
 ```
 
-    implementation "io.micronaut:micronaut-validation"
-    implementation "io.micronaut.beanvalidation:micronaut-hibernate-validator:3.0.0"
+implementation "io.micronaut:micronaut-validation"
+implementation "io.micronaut.beanvalidation:micronaut-hibernate-validator:3.0.0"
 ---
 Person {
  id: max 10.000
@@ -57,34 +57,54 @@ DATA
 #### Test using simple mock data in JUnit 5
 #### 3.1 Add test for save endpoint
 ```
-    @Test
-    public void testSave() throws MalformedURLException {
-        HttpClient client = HttpClient
-                .create(new URL("http://" + server.getHost() + ":" + server.getPort()));
-        Person person = new Person();
-        person.setFirstName("John");
-        person.setLastName("Smith");
-        person.setAge(33);
-        person = client.toBlocking().retrieve(HttpRequest.POST("/persons", person), Person.class);
-        Assertions.assertNotNull(person);
-        Assertions.assertEquals(1, person.getId());
-        Assertions.assertEquals("John", person.getFirstName());
-        Assertions.assertEquals("Smith", person.getLastName());
-    }
+@Test
+public void testSave() throws MalformedURLException {
+    HttpClient client = HttpClient
+            .create(new URL("http://" + server.getHost() + ":" + server.getPort()));
+    Person person = new Person();
+    person.setFirstName("John");
+    person.setLastName("Smith");
+    person.setAge(33);
+    person = client.toBlocking().retrieve(HttpRequest.POST("/persons", person), Person.class);
+    Assertions.assertNotNull(person);
+    Assertions.assertEquals(1, person.getId());
+    Assertions.assertEquals("John", person.getFirstName());
+    Assertions.assertEquals("Smith", person.getLastName());
+}
 ```
 #### 3.2 Simplify HttpClient by using @Client annotation
 ```
-    HttpClient client = HttpClient
-        .create(new URL("http://" + server.getHost() + ":" + server.getPort()));
-        
+HttpClient client = HttpClient
+    .create(new URL("http://" + server.getHost() + ":" + server.getPort()));
+    
 // BETTER:
 
-    @Inject
-    @Client("/")
-    HttpClient client;                
+@Inject
+@Client("/")
+HttpClient client;
 ```
 #### 3.3 Add test for save Not Valid endpoint
 ```
+@Test
+public void testSaveNotValid() throws MalformedURLException {
+    final Person person = new Person();
+    person.setFirstName("John");
+    person.setLastName("Smith");
+    person.setAge(-1);
+    
+    Assertions.assertThrows(HttpClientResponseException.class,
+        () -> client
+                .toBlocking()
+                .retrieve(HttpRequest.POST("/persons", person), Person.class),
+        "person.age: must be greater than or equal to 0");
 
-
+}
+```
+#### 3.4 Add test for testFindById
+```
+@Test
+public void testFindById() throws MalformedURLException {
+    Person person = client.toBlocking().retrieve(HttpRequest.GET("/persons/1"), Person.class);
+    Assertions.assertNotNull(person);
+}
 ```

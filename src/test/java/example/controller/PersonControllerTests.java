@@ -50,6 +50,11 @@ public class PersonControllerTests {
                     .toBlocking()
                     .retrieve(HttpRequest.POST("/persons", person), Person.class),
             "person.age: must be greater than or equal to 0");
+    }
 
+    @Test
+    public void testFindById() throws MalformedURLException {
+        Person person = client.toBlocking().retrieve(HttpRequest.GET("/persons/1"), Person.class);
+        Assertions.assertNotNull(person);
     }
 }
