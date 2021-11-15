@@ -1,5 +1,11 @@
 ## Micronaut Http Client
 
+
+### 0. Setup
+```
+ ./gradlew tasks run 
+ ```
+
 ### 1. Create a Create project from CLI
 #### add Reactor and graalvm
 ```
@@ -117,3 +123,49 @@ public void testFindById() throws MalformedURLException {
     Assertions.assertNotNull(person);
 }
 ```
+##### 4 API versioning
+#### 4.1. Create a version 2 of the findAll endpoint
+```
+@Version("1")
+@Get("{?max,offset}")
+...
+}
+
+@Version("2")
+@Get("?max,offset")
+...
+}
+// We will access the new endpoint with the Declarative Client PersonClient   
+
+@Client("/persons")
+public class PersonClient {
+    @Get("?max,offset")
+    List<Person> findAllV2(Integer max, Integer offset); 
+}
+// PersonClientTest.java
+// Push a new record and retrieve with testFindAllV2
+@MicronautTest
+public class PersonClientTest {
+
+    @Inject
+    PersonClient client;
+
+    @Inject
+    @Client("/")
+    HttpClient httpClient;
+
+    @Test
+    public void testFindAllV2() throws MalformedURLException {
+        Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Smith");
+        person.setAge(33);
+        person = httpClient.toBlocking().retrieve(HttpRequest.POST("/persons", person), Person.class);
+        Assertions.assertNotNull(person);
+
+        List<Person> persons = client.findAllV2(10, 0);
+        Assertions.assertEquals(1, persons.size());
+    }
+}
+```
+

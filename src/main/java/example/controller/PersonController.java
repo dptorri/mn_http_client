@@ -1,6 +1,7 @@
 package example.controller;
 
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.version.annotation.Version;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
@@ -34,6 +35,7 @@ public class PersonController {
                 .findFirst();
     }
 
+    @Version("1")
     @Get("{?max,offset}")
     public List<Person> findAll(@Nullable Integer max, @Nullable Integer offset) {
         return persons.stream()
