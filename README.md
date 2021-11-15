@@ -168,4 +168,15 @@ public class PersonClientTest {
     }
 }
 ```
+##### 5 Headers and Query parameters
+#### 5.1. Retrieve username from paramsController
 
+```
+@Get("/usernameList/{username}")
+public String usernameList(String username) {
+    return String.format("Query parameter username = '%s'", username);
+}
+------
+❯ curl -X GET http://localhost:8100/params/usernameList/dodos/
+Query parameter username = 'dodos'%  
+```
