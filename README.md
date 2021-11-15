@@ -216,8 +216,29 @@ Hello there Duncan!!%
 
 #### 5.3 Get all headers from the HttpResponse
 ```
-    @Get("/getAllHeaderValues")
-    public HttpResponse<String> getAllHeaderValues(HttpHeaders headers) {
-        return HttpResponse.ok(String.format("HEADERS = '%s'", headers.values()));
+@Get("/getAllHeaderValues")
+public HttpResponse<String> getAllHeaderValues(HttpHeaders headers) {
+    return HttpResponse.ok(String.format("HEADERS = '%s'", headers.values()));
+}
+```
+#### 5.4 Get Authorization header from the HttpResponse
+```
+@Get("/getAuthorizationHeader")
+public HttpResponse<String> getAuthorizationHeader(HttpHeaders headers) {
+    String authorizationHeader;
+
+    if(headers.findFirst(HttpHeaders.AUTHORIZATION).isPresent()) {
+        authorizationHeader = headers.findFirst(HttpHeaders.AUTHORIZATION).get();
+    } else {
+        authorizationHeader = "Authorization Header Not Found";
     }
+
+    return HttpResponse.ok(
+            String.format("Authorization Header = %s", authorizationHeader));
+}
+---
+❯ curl -H 'Accept: application/json' -H "Authorization: Bearer token" 
+'http://localhost:8100/params/getAuthorizationHeader'
+
+Authorization Header = Bearer token%
 ```

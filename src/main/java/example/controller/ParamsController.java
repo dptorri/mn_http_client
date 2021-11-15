@@ -35,4 +35,18 @@ public class ParamsController {
         return HttpResponse.ok(String.format("HEADERS = '%s'", headers.values()));
     }
 
+    @Get("/getAuthorizationHeader")
+    public HttpResponse<String> getAuthorizationHeader(HttpHeaders headers) {
+        String authorizationHeader;
+
+        if(headers.findFirst(HttpHeaders.AUTHORIZATION).isPresent()) {
+            authorizationHeader = headers.findFirst(HttpHeaders.AUTHORIZATION).get();
+        } else {
+            authorizationHeader = "Authorization Header Not Found";
+        }
+
+        return HttpResponse.ok(
+                String.format("Authorization Header = %s", authorizationHeader));
+    }
+
 }
