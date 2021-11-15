@@ -180,7 +180,7 @@ public String usernameList(String username) {
 ❯ curl -X GET http://localhost:8100/params/usernameList/dodos/
 Query parameter username = 'dodos'%  
 ```
-#### 5.2. getHelloHeader retrieves 'name' or 'Nobody' and update Response header 
+#### 5.2. getHelloHeader retrieves 'name' or 'Nobody' and updates Response header 
 - **A Mono<T>** : is a Publisher (Producer) that emits at most one item and then terminates.
 - **deferContextual()** :Returns a deferred Mono deriving actual Mono from context values for each
 subscription.
@@ -210,6 +210,14 @@ public Mono<HttpResponse<String>> getHelloHeader() {
     });
 }
 ------
-❯ curl -X GET http://localhost:8100/params/usernameList/dodos/
-Query parameter username = 'dodos'%  
+❯ curl http://localhost:8100/params/getHelloHeader\?name\=Duncan
+Hello there Duncan!!%  
+```
+
+#### 5.3 Get all headers from the HttpResponse
+```
+    @Get("/getAllHeaderValues")
+    public HttpResponse<String> getAllHeaderValues(HttpHeaders headers) {
+        return HttpResponse.ok(String.format("HEADERS = '%s'", headers.values()));
+    }
 ```

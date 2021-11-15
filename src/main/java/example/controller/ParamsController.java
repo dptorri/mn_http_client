@@ -30,4 +30,9 @@ public class ParamsController {
         });
     }
 
+    @Get("/getAllHeaderValues")
+    public HttpResponse<String> getAllHeaderValues(HttpHeaders headers) {
+        return HttpResponse.ok(String.format("HEADERS = '%s'", headers.values()));
+    }
+
 }
