@@ -17,4 +17,17 @@ public class ParamsController {
         return String.format("Query parameter username = '%s'", username);
     }
 
+    @Get("/getHelloHeader")
+    public Mono<HttpResponse<String>> getHelloHeader() {
+        return Mono.deferContextual(ctx -> {
+            HttpRequest<?> request = ctx.get(ServerRequestContext.KEY);
+            String name = request.getParameters()
+                    .getFirst("name")
+                    .orElse("Nobody");
+
+            return Mono.just(HttpResponse.ok("Hello there " + name + "!!")
+                    .header("X-Hello-Header", "Hello"));
+        });
+    }
+
 }

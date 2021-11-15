@@ -123,7 +123,7 @@ public void testFindById() throws MalformedURLException {
     Assertions.assertNotNull(person);
 }
 ```
-##### 4 API versioning
+### 4 API versioning
 #### 4.1. Create a version 2 of the findAll endpoint
 ```
 @Version("1")
@@ -168,13 +168,46 @@ public class PersonClientTest {
     }
 }
 ```
-##### 5 Headers and Query parameters
-#### 5.1. Retrieve username from paramsController
+### 5 Headers and Query parameters
+#### 5.1. Retrieve usernameList from paramsController
 
 ```
 @Get("/usernameList/{username}")
 public String usernameList(String username) {
     return String.format("Query parameter username = '%s'", username);
+}
+------
+❯ curl -X GET http://localhost:8100/params/usernameList/dodos/
+Query parameter username = 'dodos'%  
+```
+#### 5.2. getHelloHeader retrieves 'name' or 'Nobody' and update Response header 
+- **A Mono<T>** : is a Publisher (Producer) that emits at most one item and then terminates.
+- **deferContextual()** :Returns a deferred Mono deriving actual Mono from context values for each
+subscription.
+- **ctx ContextView** : A read-only view of a collection of key/value pairs that is propagated between
+components such as operators via the context protocol.
+- **Context** : is an immutable variant of the same key/value pairs structure which exposes a write API 
+that returns new instances on each write.
+- **ctx.get()** : Resolve a value given a type key within the Context.
+- **ServerRequestContext** : The holder for the current HttpRequest that is bound to instrumented threads.
+Allowing lookup of the current request if it is present.
+- **ServerRequestContext.KEY**: micronaut.http.server.request
+- **HttpRequest**: Common interface for HTTP request implementations.
+- **getParameters()**: The HTTP parameters contained with the URI query string.
+- **Mono.just()** Create a new Mono that emits the specified item, which is captured at instantiation time.
+```
+
+@Get("/getHelloHeader")
+public Mono<HttpResponse<String>> getHelloHeader() {
+    return Mono.deferContextual(ctx -> {
+        HttpRequest<?> request = ctx.get(ServerRequestContext.KEY);
+        String name = request.getParameters()
+                .getFirst("name")
+                .orElse("Nobody");
+
+        return Mono.just(HttpResponse.ok("Hello there" + name + "!!")
+                .header("X-Hello-Header", "Hello"));
+    });
 }
 ------
 ❯ curl -X GET http://localhost:8100/params/usernameList/dodos/
